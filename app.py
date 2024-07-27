@@ -9,6 +9,7 @@ Functions:
 
 import json
 from typing import Union
+from highcharts_core.highcharts import Chart
 
 
 class Person:
@@ -34,7 +35,7 @@ class Person:
     def add_spouse(self, spouse: "Person"):
         """Add a spouse to the person."""
         self.spouse = spouse.id
-        spouse.spouse = self.id
+        # spouse.spouse = self.id
 
     def add_child(self, child: "Person"):
         """Add a child to the person."""
@@ -78,6 +79,14 @@ class Person:
             )
         return chidren
 
+    def get_json(self):
+        """Return the person as a JSON object."""
+        return {
+            "id": str(self.id),
+            "parent": str(self.parent) if self.parent else "",
+            "name": self.name,
+        }
+
     @classmethod
     def get_member_count(cls):
         """Return the count of family members."""
@@ -85,32 +94,24 @@ class Person:
 
     def __repr__(self):
         """Return the string representation of the person."""
-        return self.name
+        return str(self.id) + " - " + self.name
 
 
 def create_family():
     """Create a family tree from JSON."""
-    print("Creating a family tree from JSON")
+    # print("Creating a family tree from JSON")
     family_members = json.load(open("family_members.json"))
     family = [Person(int(row[0]), row[1], row[2], row[4]) for row in family_members]
     Person.members = {member.id: member for member in family}
-    print(f"Total family members: {Person.get_member_count()}")
+    # print(f"Total family members: {Person.get_member_count()}")
 
     # Add parent, spouse, and children
     for row in family_members:
         if row[11]:
-            # print(row)
-            # print(
-            #     f"Adding parent: {Person.members[int(row[11])]} to child: {Person.members[int(row[0])]}"
-            # )
             child = Person.members[int(row[0])]
             parent = Person.members[int(row[11])]
             child.add_parent(parent)
         if row[12]:
-            # print(row)
-            # print(
-            #     f"Adding spouse: {Person.members[int(row[12])]} to member: {Person.members[int(row[0])]}"
-            # )
             person = Person.members[int(row[0])]
             spouse = Person.members[int(row[12])]
             person.add_spouse(spouse)
@@ -121,16 +122,18 @@ def create_family():
 def main():
     """Create a family tree from JSON."""
     create_family()
-    # Print the family tree
-    for i in Person.members:
-        print(
-            f"""
-            {i}
-            Name: {Person.members[i]}
-            Parents: {Person.members[i].get_parents()}
-            Spouse: {Person.members[i].get_spouse()}
-            Children: {Person.members[i].get_children()}"""
-        )
+    chart_data = [
+        member.get_json() for member in Person.members.values() if member.spouse is None
+    ]
+    try:
+        my_chart = Chart(data=chart_data, series_type="treegraph")
+        my_chart.options.title = {"text": "EV House Family Tree"}
+        my_chart.options.tooltip = {"pointFormat": "{point.name}"}
+        my_chart.height = 1200
+        my_chart.width = 1200
+        my_chart.download_chart(filename="family_tree.png")
+    except Exception as e:
+        print(f"Error: {e}")
 
 
 if __name__ == "__main__":

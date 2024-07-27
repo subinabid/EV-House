@@ -71,17 +71,11 @@ def get_family_members():
         print(err)
 
 
-def dump_family_members_json():
+def main():
     """Get the family members from the Google Sheet and create JSON file."""
     family_members = get_family_members()
     json.dump(family_members, open("family_members.json", "w"), indent=4)
-
-
-def main():
-    """Get the family members from the Google Sheet."""
-    family_members = get_family_members()
-    for member in family_members:
-        print(member)
+    print("Family members dumped to family_members.json")
 
 
 if __name__ == "__main__":
