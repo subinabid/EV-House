@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EV House Family Tree</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>EV House Family Tree</h1>
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search family members...">
+                <div id="search-results" class="search-dropdown"></div>
+            </div>
+            <button id="reset-btn" title="Reset zoom and view">Reset View</button>
+            <button id="expand-all-btn">Expand All</button>
+            <button id="collapse-all-btn">Collapse All</button>
+        </div>
+    </header>
+
+    <div id="main-container">
+        <div id="tree-container">
+            <svg id="tree-svg"></svg>
+        </div>
+        <aside id="detail-panel">
+            <div id="detail-placeholder">
+                <p>Click on a family member to see details</p>
+            </div>
+            <div id="detail-content" style="display:none;">
+                <h2 id="detail-name"></h2>
+                <div class="detail-fields">
+                    <div class="field">
+                        <span class="field-label">ID</span>
+                        <span id="detail-id"></span>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Gender</span>
+                        <span id="detail-gender"></span>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Status</span>
+                        <span id="detail-status"></span>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Spouse</span>
+                        <span id="detail-spouse"></span>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Parents</span>
+                        <span id="detail-parents"></span>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Children</span>
+                        <span id="detail-children"></span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="{{ url_for('static', filename='js/tree.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+/* === Reset & Base === */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f5f5f0;
+    color: #333;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* === Header === */
+header {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+header h1 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+/* === Search === */
+.search-box {
+    position: relative;
+    flex: 1;
+    max-width: 320px;
+    min-width: 180px;
+}
+
+#search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+    background: #3d566e;
+    color: #ecf0f1;
+    transition: background 0.2s;
+}
+
+#search-input::placeholder {
+    color: #95a5a6;
+}
+
+#search-input:focus {
+    background: #4a6a8a;
+}
+
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+    z-index: 100;
+}
+
+.search-dropdown.active {
+    display: block;
+}
+
+.search-dropdown .result-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    transition: background 0.15s;
+}
+
+.search-dropdown .result-item:hover {
+    background: #e8f0fe;
+}
+
+.search-dropdown .result-item .result-name {
+    font-weight: 500;
+}
+
+.search-dropdown .result-item .result-meta {
+    font-size: 0.8rem;
+    color: #777;
+}
+
+/* === Buttons === */
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background: #3498db;
+    color: #fff;
+    transition: background 0.2s, transform 0.1s;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+#reset-btn {
+    background: #e67e22;
+}
+
+#reset-btn:hover {
+    background: #d35400;
+}
+
+/* === Main Layout === */
+#main-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+#tree-container {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+#tree-container svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* === Detail Panel === */
+#detail-panel {
+    width: 300px;
+    background: #fff;
+    border-left: 1px solid #ddd;
+    padding: 20px;
+    overflow-y: auto;
+    flex-shrink: 0;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.05);
+}
+
+#detail-placeholder {
+    color: #999;
+    text-align: center;
+    margin-top: 40px;
+}
+
+#detail-content h2 {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 8px;
+}
+
+.detail-fields .field {
+    margin-bottom: 12px;
+}
+
+.field-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #888;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.field span:last-child {
+    font-size: 0.95rem;
+    color: #333;
+}
+
+/* === D3 Tree Styles === */
+.node rect {
+    fill: #fff;
+    stroke: #2c3e50;
+    stroke-width: 1.5px;
+    rx: 8px;
+    ry: 8px;
+}
+
+.node text {
+    font-size: 0.8rem;
+    fill: #333;
+    pointer-events: none;
+}
+
+.node .name-text {
+    font-weight: 600;
+    font-size: 0.82rem;
+}
+
+.node .spouse-text {
+    font-size: 0.7rem;
+    fill: #888;
+}
+
+.link {
+    fill: none;
+    stroke: #bdc3c7;
+    stroke-width: 1.5px;
+}
+
+.node:hover rect {
+    stroke: #3498db;
+    stroke-width: 2.5px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+.node.selected rect {
+    stroke: #e74c3c;
+    stroke-width: 3px;
+    fill: #fef9f9;
+}
+
+/* === Zoom controls === */
+.zoom-controls {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.zoom-controls button {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    background: #fff;
+    color: #2c3e50;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.zoom-controls button:hover {
+    background: #f0f0f0;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+    #detail-panel {
+        width: 240px;
+        font-size: 0.85rem;
+    }
+    header {
+        padding: 8px 12px;
+    }
+    header h1 {
+        font-size: 1.1rem;
+    }
+}

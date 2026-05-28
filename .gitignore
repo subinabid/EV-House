@@ -2,3 +2,12 @@
 credentials.json
 .env
 token.json
+
+__pycache__/
+.pytest_cache/
+*.pyc
+.python-version
+
+# System files
+.DS_Store
+Thumbs.db

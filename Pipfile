@@ -10,8 +10,10 @@ google-auth-oauthlib = "*"
 python-dotenv = "*"
 pytest = "*"
 highcharts-core = "*"
+flask = "*"
 
 [dev-packages]
+mypy = "*"
 
 [requires]
 python_version = "3.12"

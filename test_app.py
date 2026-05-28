@@ -1,6 +1,6 @@
 """Test the app module."""
 
-from app import Person
+from models import Person
 
 
 def test_person():
