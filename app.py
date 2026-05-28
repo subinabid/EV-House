@@ -9,7 +9,7 @@ Functions:
 
 import json
 from typing import Union
-from highcharts_core.highcharts import Chart
+from highcharts_core.highcharts import Chart  # type: ignore[import]
 
 
 class Person:

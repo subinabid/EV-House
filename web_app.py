@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
-from flask import Flask, render_template, jsonify, request, Response
+from flask import Flask, render_template, jsonify, request, Response  # type: ignore[import]
 from tree_builder import build_tree, get_all_members, load_family
 from models import Person
 
