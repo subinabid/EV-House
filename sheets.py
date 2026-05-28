@@ -26,12 +26,12 @@ import os
 import json
 from typing import Any
 
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from dotenv import load_dotenv
+from google.auth.transport.requests import Request  # type: ignore[import]
+from google.oauth2.credentials import Credentials  # type: ignore[import]
+from google_auth_oauthlib.flow import InstalledAppFlow  # type: ignore[import]
+from googleapiclient.discovery import build  # type: ignore[import]
+from googleapiclient.errors import HttpError  # type: ignore[import]
+from dotenv import load_dotenv  # type: ignore[import]
 
 load_dotenv(".env")
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
@@ -44,16 +44,46 @@ COLUMNS: list[dict[str, str | int]] = [
     {"index": 0, "letter": "A", "name": "Sl", "description": "Serial number"},
     {"index": 1, "letter": "B", "name": "Name", "description": "Full name"},
     {"index": 2, "letter": "C", "name": "Gender", "description": "Male / Female"},
-    {"index": 3, "letter": "D", "name": "aka", "description": "Also known as / nickname"},
-    {"index": 4, "letter": "E", "name": "VitalStatus", "description": "Blank or 'Late' if deceased"},
+    {
+        "index": 3,
+        "letter": "D",
+        "name": "aka",
+        "description": "Also known as / nickname",
+    },
+    {
+        "index": 4,
+        "letter": "E",
+        "name": "VitalStatus",
+        "description": "Blank or 'Late' if deceased",
+    },
     {"index": 5, "letter": "F", "name": "DoB", "description": "Date of birth"},
-    {"index": 6, "letter": "G", "name": "Age2015", "description": "Age in 2015 (ignored)"},
-    {"index": 7, "letter": "H", "name": "Age2024", "description": "Age in 2024 (used when DoB missing)"},
+    {
+        "index": 6,
+        "letter": "G",
+        "name": "Age2015",
+        "description": "Age in 2015 (ignored)",
+    },
+    {
+        "index": 7,
+        "letter": "H",
+        "name": "Age2024",
+        "description": "Age in 2024 (used when DoB missing)",
+    },
     {"index": 8, "letter": "I", "name": "Phone", "description": "Phone number"},
     {"index": 9, "letter": "J", "name": "EmailId", "description": "Email address"},
     {"index": 10, "letter": "K", "name": "BloodGroup", "description": "Blood group"},
-    {"index": 11, "letter": "L", "name": "Parent", "description": "Sl number of parent"},
-    {"index": 12, "letter": "M", "name": "Spouse", "description": "Sl number of spouse (married into family)"},
+    {
+        "index": 11,
+        "letter": "L",
+        "name": "Parent",
+        "description": "Sl number of parent",
+    },
+    {
+        "index": 12,
+        "letter": "M",
+        "name": "Spouse",
+        "description": "Sl number of spouse (married into family)",
+    },
 ]
 
 
