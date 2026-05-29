@@ -16,14 +16,14 @@ pipenv run python sheets.py
 
 ```bash
 # Run the web app
-pipenv run python web_app.py
+pipenv run python app.py
 # → http://localhost:4000
 ```
 
 ## Project Structure
 
 ```text
-├── web_app.py          # Flask app (routes + API)
+├── app.py              # Flask app (routes + API)
 ├── sheets.py           # Google Sheets → family_members.json
 ├── models.py           # Person model (parent/spouse/children graph)
 ├── tree_builder.py     # Flat data → D3 hierarchical tree
@@ -47,6 +47,6 @@ pipenv run python web_app.py
 
 ## Data Flow
 
-Google Sheet  →  sheets.py  →  family_members.json  →  web_app.py  →  Browser
+Google Sheet  →  sheets.py  →  family_members.json  →  app.py  →  Browser
 
 Run `pipenv run python sheets.py` whenever sheet data changes.

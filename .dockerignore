@@ -1,0 +1,30 @@
+# Secrets / local dev
+.env
+credentials.json
+token.json
+
+# Not needed in container
+sheets.py
+test_app.py
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.python-version
+Pipfile
+Pipfile.lock
+
+# Dev
+evhouse.code-workspace
+README.md
+AGENTS.md
+
+# System
+.DS_Store
+Thumbs.db
+.git
+.gitignore
+Dockerfile
+.dockerignore
