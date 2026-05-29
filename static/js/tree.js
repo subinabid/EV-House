@@ -84,6 +84,9 @@ async function init() {
 
     // Center the root
     svg.call(zoom.transform, d3.zoomIdentity.translate(width() / 2 - root.x, 60));
+
+    // Initialize mobile list after tree data is ready
+    initMobileList();
 }
 
 // --- Update tree ---
@@ -437,7 +440,11 @@ document.getElementById("collapse-all-btn").addEventListener("click", () => {
 window.addEventListener("resize", () => {
     svg.attr("width", width()).attr("height", height());
     treeLayout.size([width() - 40, height() - 120]);
-    update(root);
+    if (window.innerWidth > 768) {
+        update(root);
+    } else if (root) {
+        renderList();
+    }
 });
 
 // --- Click on SVG background to deselect ---
@@ -448,5 +455,197 @@ svg.on("click", () => {
     document.getElementById("detail-content").style.display = "none";
 });
 
-// --- Initialize ---
+// --- Mobile cascading list (see initMobileList called from init above) ---
+
+let flatMembers = [];
+
+async function initMobileList() {
+    try {
+        const resp = await fetch("/api/members");
+        flatMembers = await resp.json();
+
+        // Build the detail overlay
+        const overlay = document.createElement("div");
+        overlay.id = "detail-overlay";
+        overlay.innerHTML = `
+            <div class="overlay-card">
+                <button class="close-btn">&times;</button>
+                <h2 id="overlay-name"></h2>
+                <div class="detail-fields">
+                    <div class="field">
+                        <span class="field-label">Gender</span>
+                        <span id="overlay-gender"></span>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Status</span>
+                        <span id="overlay-status"></span>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Spouse</span>
+                        <span id="overlay-spouse"></span>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Parents</span>
+                        <span id="overlay-parents"></span>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Children</span>
+                        <span id="overlay-children"></span>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        overlay.addEventListener("click", (e) => {
+            if (e.target === overlay || e.target.classList.contains("close-btn")) {
+                overlay.classList.remove("active");
+            }
+        });
+
+        // Render the list from the tree data
+        renderList();
+    } catch (err) {
+        console.error("Failed to init mobile list:", err);
+    }
+}
+
+function renderList() {
+    const container = document.getElementById("list-container");
+    if (!container) return;
+
+    const treeData = root ? root : null;
+    if (!treeData) return;
+
+    container.innerHTML = "";
+    const ul = document.createElement("ul");
+    ul.className = "list-tree";
+    renderListNode(treeData, ul, 0);
+    container.appendChild(ul);
+}
+
+function renderListNode(node, parentEl, depth) {
+    const li = document.createElement("li");
+
+    const hasKids = (node.children && node.children.length > 0) ||
+                    (node._children && node._children.length > 0);
+    const isExpanded = node.children && node.children.length > 0;
+
+    li.innerHTML = `
+        <div class="list-item" data-id="${node.data.id}">
+            <span class="gender-dot ${node.data.gender === 'Male' ? 'male' : 'female'}"></span>
+            <span class="list-name">${node.data.name}${node.data.vital_stats && node.data.vital_stats.toLowerCase().includes('late') ? ' ⚰' : ''}</span>
+            ${node.data.spouse_name ? `<span class="list-spouse">+ ${node.data.spouse_name}</span>` : ''}
+            <span class="list-toggle ${hasKids ? '' : 'empty'}">${isExpanded ? '−' : (hasKids ? '+' : '')}</span>
+        </div>
+    `;
+
+    const itemDiv = li.querySelector(".list-item");
+
+    itemDiv.addEventListener("click", (e) => {
+        if (e.target.classList.contains("list-toggle")) {
+            // Toggle children
+            if (node.children && node.children.length > 0) {
+                node._children = node.children;
+                node.children = null;
+            } else if (node._children && node._children.length > 0) {
+                node.children = node._children;
+                node._children = null;
+            }
+            renderList();
+            return;
+        }
+        // Show details
+        document.querySelectorAll(".list-item.selected").forEach(el => el.classList.remove("selected"));
+        itemDiv.classList.add("selected");
+        showMobileDetails(node.data.id);
+    });
+
+    parentEl.appendChild(li);
+
+    // Render children (respect collapse state)
+    if (isExpanded && node.children && node.children.length > 0) {
+        const childUl = document.createElement("ul");
+        node.children.forEach(child => renderListNode(child, childUl, depth + 1));
+        li.appendChild(childUl);
+    }
+}
+
+async function showMobileDetails(id) {
+    try {
+        const resp = await fetch(`/api/member/${id}`);
+        const member = await resp.json();
+        if (member.error) return;
+
+        const overlay = document.getElementById("detail-overlay");
+        document.getElementById("overlay-name").textContent = member.name;
+        document.getElementById("overlay-gender").textContent = member.gender;
+        document.getElementById("overlay-status").textContent = member.vital_stats || "—";
+        document.getElementById("overlay-spouse").textContent = member.spouse_name || "—";
+
+        const parentsList = member.parents && member.parents.length > 0
+            ? member.parents.map(p => p.name).join(", ")
+            : "—";
+        document.getElementById("overlay-parents").textContent = parentsList;
+
+        const childrenList = member.children_names && member.children_names.length > 0
+            ? member.children_names.join(", ")
+            : "—";
+        document.getElementById("overlay-children").textContent = childrenList;
+
+        overlay.classList.add("active");
+    } catch (err) {
+        console.error("Failed to show mobile details:", err);
+    }
+}
+
+// Update focusNode to work on mobile too
+const originalFocusNode = focusNode;
+focusNode = async function(id) {
+    // On mobile, scroll the list to the matching item
+    if (window.innerWidth <= 768) {
+        // Expand ancestors in the tree data first (shared with list)
+        let node = findNodeById(root, id);
+        if (!node) {
+            try {
+                const resp = await fetch(`/api/member/${id}`);
+                const member = await resp.json();
+                if (member.spouse) {
+                    id = member.spouse;
+                    node = findNodeById(root, id);
+                }
+            } catch (err) {}
+        }
+        if (!node) return;
+
+        let current = node;
+        while (current) {
+            if (current._children) {
+                current.children = current._children;
+                current._children = null;
+            }
+            current = current.parent;
+        }
+
+        renderList();
+
+        // Scroll to the matching item
+        setTimeout(() => {
+            const item = document.querySelector(`.list-item[data-id="${id}"]`);
+            if (item) {
+                item.scrollIntoView({ behavior: "smooth", block: "center" });
+                document.querySelectorAll(".list-item.selected").forEach(el => el.classList.remove("selected"));
+                item.classList.add("selected");
+            }
+        }, 100);
+
+        showMobileDetails(id);
+        return;
+    }
+
+    // Desktop: use original behavior
+    return originalFocusNode(id);
+};
+
+// --- Start the app ---
 init();

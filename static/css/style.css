@@ -7,8 +7,8 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: #f5f5f0;
-    color: #333;
+    background: #f8fafc;
+    color: #1e293b;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -17,14 +17,15 @@ body {
 
 /* === Header === */
 header {
-    background: #2c3e50;
-    color: #ecf0f1;
+    background: #ffffff;
+    color: #1e293b;
     padding: 12px 24px;
     display: flex;
     align-items: center;
     gap: 24px;
     flex-shrink: 0;
     flex-wrap: wrap;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 header h1 {
@@ -52,21 +53,23 @@ header h1 {
 #search-input {
     width: 100%;
     padding: 8px 12px;
-    border: none;
+    border: 1px solid #e2e8f0;
     border-radius: 6px;
     font-size: 0.9rem;
     outline: none;
-    background: #3d566e;
-    color: #ecf0f1;
-    transition: background 0.2s;
+    background: #f8fafc;
+    color: #1e293b;
+    transition: background 0.2s, border-color 0.2s;
 }
 
 #search-input::placeholder {
-    color: #95a5a6;
+    color: #94a3b8;
 }
 
 #search-input:focus {
-    background: #4a6a8a;
+    background: #ffffff;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
 .search-dropdown {
@@ -111,18 +114,18 @@ header h1 {
 /* === Buttons === */
 button {
     padding: 8px 16px;
-    border: none;
+    border: 1px solid #e2e8f0;
     border-radius: 6px;
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 500;
-    background: #3498db;
-    color: #fff;
+    background: #ffffff;
+    color: #1e293b;
     transition: background 0.2s, transform 0.1s;
 }
 
 button:hover {
-    background: #2980b9;
+    background: #f1f5f9;
 }
 
 button:active {
@@ -130,11 +133,13 @@ button:active {
 }
 
 #reset-btn {
-    background: #e67e22;
+    background: #fef2f2;
+    color: #ef4444;
+    border-color: #fecaca;
 }
 
 #reset-btn:hover {
-    background: #d35400;
+    background: #fee2e2;
 }
 
 /* === Main Layout === */
@@ -159,15 +164,14 @@ button:active {
 #detail-panel {
     width: 300px;
     background: #fff;
-    border-left: 1px solid #ddd;
+    border-left: 1px solid #e2e8f0;
     padding: 20px;
     overflow-y: auto;
     flex-shrink: 0;
-    box-shadow: -2px 0 8px rgba(0,0,0,0.05);
 }
 
 #detail-placeholder {
-    color: #999;
+    color: #94a3b8;
     text-align: center;
     margin-top: 40px;
 }
@@ -175,8 +179,8 @@ button:active {
 #detail-content h2 {
     font-size: 1.2rem;
     margin-bottom: 16px;
-    color: #2c3e50;
-    border-bottom: 2px solid #3498db;
+    color: #1e293b;
+    border-bottom: 2px solid #6366f1;
     padding-bottom: 8px;
 }
 
@@ -188,20 +192,20 @@ button:active {
     display: block;
     font-size: 0.75rem;
     text-transform: uppercase;
-    color: #888;
+    color: #94a3b8;
     letter-spacing: 0.5px;
     margin-bottom: 2px;
 }
 
 .field span:last-child {
     font-size: 0.95rem;
-    color: #333;
+    color: #334155;
 }
 
 /* === D3 Tree Styles === */
 .node rect {
     fill: #fff;
-    stroke: #2c3e50;
+    stroke: #e2e8f0;
     stroke-width: 1.5px;
     rx: 8px;
     ry: 8px;
@@ -209,36 +213,36 @@ button:active {
 
 .node text {
     font-size: 0.8rem;
-    fill: #333;
+    fill: #334155;
     pointer-events: none;
 }
 
 .node .name-text {
     font-weight: 600;
     font-size: 0.82rem;
+    fill: #1e293b;
 }
 
 .node .spouse-text {
     font-size: 0.7rem;
-    fill: #888;
+    fill: #94a3b8;
 }
 
 .link {
     fill: none;
-    stroke: #bdc3c7;
+    stroke: #cbd5e1;
     stroke-width: 1.5px;
 }
 
 .node:hover rect {
-    stroke: #3498db;
+    stroke: #6366f1;
     stroke-width: 2.5px;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
 }
 
 .node.selected rect {
-    stroke: #e74c3c;
+    stroke: #6366f1;
     stroke-width: 3px;
-    fill: #fef9f9;
+    fill: #eef2ff;
 }
 
 /* === Zoom controls === */
@@ -258,25 +262,208 @@ button:active {
     font-size: 1.2rem;
     border-radius: 50%;
     background: #fff;
-    color: #2c3e50;
-    border: 1px solid #ccc;
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .zoom-controls button:hover {
-    background: #f0f0f0;
+    background: #f1f5f9;
+}
+
+/* === Cascading List (mobile) === */
+#list-container {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 8px;
+    background: #f8fafc;
+}
+
+.list-tree {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.list-tree ul {
+    list-style: none;
+    padding-left: 20px;
+    margin: 0;
+}
+
+.list-item {
+    cursor: pointer;
+    padding: 10px 14px;
+    margin: 2px 0;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.15s;
+    position: relative;
+}
+
+.list-item:hover {
+    background: #eef2ff;
+}
+
+.list-item.selected {
+    background: #eef2ff;
+    border-color: #6366f1;
+}
+
+.list-item .gender-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.list-item .gender-dot.male {
+    background: #3b82f6;
+}
+
+.list-item .gender-dot.female {
+    background: #ec4899;
+}
+
+.list-item .list-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1e293b;
+    flex: 1;
+}
+
+.list-item .list-spouse {
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+.list-item .list-toggle {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #6366f1;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.list-item .list-toggle.empty {
+    visibility: hidden;
+}
+
+/* === Detail overlay (mobile) === */
+#detail-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 50;
+}
+
+#detail-overlay.active {
+    display: block;
+}
+
+#detail-overlay .overlay-card {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 70vh;
+    background: #fff;
+    border-radius: 16px 16px 0 0;
+    padding: 24px 20px;
+    overflow-y: auto;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+}
+
+#detail-overlay .overlay-card h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #1e293b;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #6366f1;
+}
+
+#detail-overlay .close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #64748b;
 }
 
 /* === Responsive === */
 @media (max-width: 768px) {
-    #detail-panel {
-        width: 240px;
-        font-size: 0.85rem;
-    }
     header {
-        padding: 8px 12px;
+        padding: 10px 12px;
+        gap: 10px;
     }
+
     header h1 {
-        font-size: 1.1rem;
+        font-size: 1rem;
+        flex: 1 0 100%;
+    }
+
+    .toolbar {
+        flex: 1 0 100%;
+    }
+
+    .search-box {
+        max-width: none;
+        flex: 2;
+        min-width: 0;
+    }
+
+    #reset-btn,
+    #expand-all-btn,
+    #collapse-all-btn {
+        display: none;
+    }
+
+    #main-container {
+        flex-direction: column;
+    }
+
+    #tree-container {
+        display: none;
+    }
+
+    #list-container {
+        display: block;
+    }
+
+    #detail-panel {
+        display: none;
+    }
+
+    .zoom-controls {
+        display: none;
+    }
+}
+
+@media (min-width: 769px) {
+    #detail-overlay {
+        display: none !important;
     }
 }
