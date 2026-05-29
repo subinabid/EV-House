@@ -80,13 +80,31 @@ def test_get_children():
     parent.add_child(child1)
     parent.add_child(child2)
     Person.members = {1: parent, 2: spouse, 3: child1, 4: child2}
+    # Parent sees their own children
     assert parent.get_children() == [(3, "Jack Doe"), (4, "Jill Doe")]
+    # Spouse also sees the children (pulled from the parent's children list)
     assert spouse.get_children() == [(3, "Jack Doe"), (4, "Jill Doe")]
+
+
+def test_get_children_with_spouse_children():
+    """get_children should include both the person's and the spouse's children."""
+    parent = Person(1, "John Doe", "M", "")
+    spouse = Person(2, "Jane Doe", "F", "")
+    child_a = Person(3, "Jack Doe", "M", "")
+    child_b = Person(4, "Jill Doe", "F", "")
+    parent.add_spouse(spouse)
+    parent.add_child(child_a)
+    spouse.add_child(child_b)
+    Person.members = {1: parent, 2: spouse, 3: child_a, 4: child_b}
+    # Both parent and spouse should see the combined children
+    expected = [(3, "Jack Doe"), (4, "Jill Doe")]
+    assert sorted(parent.get_children()) == expected
+    assert sorted(spouse.get_children()) == expected
 
 
 def test_get_member_count():
     """Test the get_member_count method of the Person class."""
-    Person.members = [{1: Person(1, "John Doe", "M", "")}]
+    Person.members = {1: Person(1, "John Doe", "M", "")}
     assert Person.get_member_count() == 1
-    Person.members = []
+    Person.members = {}
     assert Person.get_member_count() == 0

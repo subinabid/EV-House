@@ -268,7 +268,6 @@ async function showMemberDetails(id) {
         document.getElementById("detail-content").style.display = "block";
 
         document.getElementById("detail-name").textContent = member.name;
-        document.getElementById("detail-id").textContent = member.id;
         document.getElementById("detail-gender").textContent = member.gender;
         document.getElementById("detail-status").textContent = member.vital_stats || "—";
         document.getElementById("detail-spouse").textContent = member.spouse_name || "—";
@@ -347,12 +346,41 @@ async function doSearch(query) {
     }
 }
 
-function focusNode(id) {
-    // Expand path to node
-    const node = root.descendants().find(d => d.data.id === id);
+function findNodeById(node, id) {
+    if (node.data.id === id) return node;
+    const kids = node.children || node._children;
+    if (kids) {
+        for (const child of kids) {
+            const found = findNodeById(child, id);
+            if (found) return found;
+        }
+    }
+    return null;
+}
+
+async function focusNode(id) {
+    // Search both visible (children) and collapsed (_children) subtrees
+    let node = findNodeById(root, id);
+
+    // If not found as a tree node, this person may be a spouse
+    // (spouses are shown as labels on their partner's card, not as separate nodes)
+    if (!node) {
+        try {
+            const resp = await fetch(`/api/member/${id}`);
+            const member = await resp.json();
+            if (member.spouse) {
+                // Focus on the partner's node instead
+                id = member.spouse;
+                node = findNodeById(root, id);
+            }
+        } catch (err) {
+            console.error("Failed to fetch member for spouse lookup:", err);
+        }
+    }
+
     if (!node) return;
 
-    // Expand all ancestors
+    // Expand all ancestors so the node becomes visible
     let current = node;
     while (current) {
         if (current._children) {
@@ -364,7 +392,7 @@ function focusNode(id) {
 
     update(node);
 
-    // Pan to the node
+    // Pan to center the node on screen
     const transform = d3.zoomIdentity
         .translate(width() / 2 - node.x, height() / 2 - node.y)
         .scale(1);
