@@ -7,13 +7,14 @@ Google sheet has the following columns:
     D(4). aka
     E(5). VitalStatus
     F(6). DoB
-    G(7). Age2015 - Ignore this column
-    H(8). Age2024 - Use this column till DoB is available
+    G(7). Age2024 - Ignore this column
+    H(8). Age2026 - Use this column till DoB is available
     I(9). Phone
     J(10). EmailId
     K(11). BloodGroup
     L(12). Parent
     M(13). Spouse
+    N(14). SocialMedia Link
     Ignore other columns if any
 
 Functions:
@@ -60,14 +61,14 @@ COLUMNS: list[dict[str, str | int]] = [
     {
         "index": 6,
         "letter": "G",
-        "name": "Age2015",
-        "description": "Age in 2015 (ignored)",
+        "name": "Age2024",
+        "description": "Age in 2024 (ignored)",
     },
     {
         "index": 7,
         "letter": "H",
-        "name": "Age2024",
-        "description": "Age in 2024 (used when DoB missing)",
+        "name": "Age2026",
+        "description": "Age in 2026 (used when DoB missing)",
     },
     {"index": 8, "letter": "I", "name": "Phone", "description": "Phone number"},
     {"index": 9, "letter": "J", "name": "EmailId", "description": "Email address"},
@@ -83,6 +84,12 @@ COLUMNS: list[dict[str, str | int]] = [
         "letter": "M",
         "name": "Spouse",
         "description": "Sl number of spouse (married into family)",
+    },
+    {
+        "index": 13,
+        "letter": "N",
+        "name": "SocialMedia Link",
+        "description": "Social media profile link",
     },
 ]
 
